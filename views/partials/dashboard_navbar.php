@@ -8,8 +8,8 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         <!-- Left: Brand (links to homepage) + Breadcrumbs -->
         <div class="d-flex flex-wrap align-items-center gap-3">
             <a class="text-dark navbar-brand fw-bold" href="/">
-                <img src="/assets/logo.png" alt="Logo" height="30" class="me-2">
-                Learn Mi'gmaq
+                <img src="/assets/<?= htmlspecialchars(site('site_logo', 'logo.png')) ?>" alt="Logo" height="30" class="me-2">
+                <?= htmlspecialchars(site('site_name', "Learn Mi'gmaq Online")) ?>
             </a>
             <a href="/dashboard" class="text-dark small">
                 🏠 Dashboard Home
