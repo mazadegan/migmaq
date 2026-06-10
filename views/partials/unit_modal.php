@@ -73,4 +73,17 @@
             document.getElementById('sample').value = lessonEditor.getContents(false);
             // now the POST will include the HTML in `unitBody`
         });
+
+    const unitModal = document.getElementById('exampleModal');
+    unitModal.addEventListener('show.bs.modal', event => {
+        const trigger = event.relatedTarget;
+        if (!trigger || !trigger.classList.contains('edit-btn')) {
+            document.getElementById('saveForm').reset();
+            document.getElementById('unitId').value = '';
+            document.getElementById('exampleModalLabel').textContent = 'Create Unit';
+            if (lessonEditor) {
+                lessonEditor.setContents('');
+            }
+        }
+    });
 </script>

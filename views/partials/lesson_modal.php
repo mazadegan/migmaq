@@ -64,4 +64,17 @@
         .addEventListener('submit', e => {
             document.getElementById('lessonEditor').value = lessonEditor.getContents(false);
         });
+
+    const lessonModal = document.getElementById('lessonModal');
+    lessonModal.addEventListener('show.bs.modal', event => {
+        const trigger = event.relatedTarget;
+        if (!trigger || !trigger.classList.contains('edit-btn')) {
+            document.getElementById('lessonSaveForm').reset();
+            document.getElementById('lessonId').value = '';
+            document.getElementById('lessonModalLabel').textContent = 'Create Lesson';
+            if (lessonEditor) {
+                lessonEditor.setContents('');
+            }
+        }
+    });
 </script>
