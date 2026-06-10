@@ -1,22 +1,28 @@
-<nav class="px-2 py-0 navbar" style="background-color: rgb(240, 69, 21);">
+<nav class="px-2 py-0 navbar" style="background-color: <?= htmlspecialchars(site('site_color', '#f04515')) ?>;">
     <div class="d-flex align-items-center justify-content-between container-fluid">
         <!-- Left: Brand -->
         <a href="/" class="d-flex align-items-center mb-0 text-white navbar-brand">
-            <img src="/assets/logo.png" alt="Logo" height="60" class="me-2 py-0">
-            Learn Mi'gmaq Online
+            <img src="/assets/<?= htmlspecialchars(site('site_logo', 'logo.png')) ?>" alt="Logo" height="60" class="me-2 py-0">
+            <?= htmlspecialchars(site('site_name', "Learn Mi'gmaq Online")) ?>
         </a>
 
         <!-- Right: Social Icons -->
         <div class="d-flex gap-3">
-            <a href="https://www.facebook.com/groups/learnmigmaq" class="text-white fs-4" title="Facebook">
+            <?php if (site('social_facebook_enabled', '1') === '1'): ?>
+            <a href="<?= htmlspecialchars(site('social_facebook_url')) ?>" class="text-white fs-4" title="Facebook">
                 <i class="bi bi-facebook"></i>
             </a>
-            <a href="https://x.com/learnmigmaq" class="text-white fs-4" title="X (Twitter)">
+            <?php endif; ?>
+            <?php if (site('social_twitter_enabled', '1') === '1'): ?>
+            <a href="<?= htmlspecialchars(site('social_twitter_url')) ?>" class="text-white fs-4" title="X (Twitter)">
                 <i class="bi bi-twitter-x"></i>
             </a>
-            <a href="https://www.instagram.com/learnmigmaq" class="text-white fs-4" title="Instagram">
+            <?php endif; ?>
+            <?php if (site('social_instagram_enabled', '1') === '1'): ?>
+            <a href="<?= htmlspecialchars(site('social_instagram_url')) ?>" class="text-white fs-4" title="Instagram">
                 <i class="bi bi-instagram"></i>
             </a>
+            <?php endif; ?>
         </div>
     </div>
 </nav>

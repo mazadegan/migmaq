@@ -12,6 +12,7 @@ require_once __DIR__ . '/../controllers/LessonController.php';
 
 require_once __DIR__ . '/../controllers/ContentsController.php';
 require_once __DIR__ . '/../controllers/PageController.php';
+require_once __DIR__ . '/../controllers/SiteSettingsController.php';
 
 // Normalize the path
 $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
@@ -38,6 +39,7 @@ $routes = [
         '/section/fetch' => fn() => (new SectionController($pdo))->fetch(),
         '/dashboard/account' => fn() => (new UserController($pdo))->showAccount(),
         '/dashboard/manage-users' => fn() => (new UserController($pdo))->index(),
+        '/dashboard/site-settings' => fn() => (new SiteSettingsController($pdo))->show(),
         '/dashboard/unit-editor' => fn() => (new DashboardController($pdo))->unitEditor(),
         '/dashboard/section-editor' => fn() => (new DashboardController($pdo))->sectionEditor(),
         '/dashboard/lesson-editor' => fn() => (new DashboardController($pdo))->lessonEditor(),
@@ -69,6 +71,11 @@ $routes = [
         '/lesson/update-order' => fn() => (new LessonController($pdo))->updateOrder(),
         '/settings/registration' => fn() => (new UserController($pdo))->toggleRegistration(),
         '/settings/update' => fn() => (new UserController($pdo))->updateSetting(),
+        '/site-settings/save-branding' => fn() => (new SiteSettingsController($pdo))->saveBranding(),
+        '/site-settings/save-social' => fn() => (new SiteSettingsController($pdo))->saveSocial(),
+        '/site-settings/save-page-visibility' => fn() => (new SiteSettingsController($pdo))->savePageVisibility(),
+        '/site-settings/save-page-content' => fn() => (new SiteSettingsController($pdo))->savePageContent(),
+        '/site-settings/save-column-images' => fn() => (new SiteSettingsController($pdo))->saveColumnImages(),
     ]
 ];
 

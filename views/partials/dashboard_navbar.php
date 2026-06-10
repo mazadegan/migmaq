@@ -14,6 +14,11 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <a href="/dashboard" class="text-dark small">
                 🏠 Dashboard Home
             </a>
+            <?php if (isAdmin()): ?>
+            <a href="/dashboard/site-settings" class="text-dark small">
+                ⚙️ Site Settings
+            </a>
+            <?php endif; ?>
 
             <div class="text-muted small">
                 <?php if (str_starts_with($currentPath, '/dashboard/section-editor') && isset($unit)): ?>

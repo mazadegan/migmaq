@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Mi'gmaq</title>
+    <title><?= htmlspecialchars(site('site_name', "Learn Mi'gmaq Online")) ?></title>
     <link rel="stylesheet" href="/src/suneditor.min.css">
     <link rel="stylesheet" href="/src/github-markdown.css">
 

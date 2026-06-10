@@ -20,6 +20,11 @@ function getAllSettings(PDO $pdo): array {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function site(string $key, string $default = ''): string {
+    global $siteSettings;
+    return $siteSettings[$key] ?? $default;
+}
+
 function generate_csrf_token() {
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
