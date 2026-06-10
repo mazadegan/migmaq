@@ -1,24 +1,24 @@
 # Learn Mi'gmaq Online
 
-Welcome! 👋 This is a redesign of the original Learn Mi'gmaq website using PHP. It includes features like user registration and login, content creation and editing (units, sections, lessons) with a WYSIWYG editor, audio uploads, and administrative user management.
+This is a redesign of the original Learn Mi'gmaq website using PHP. It includes user registration and login, content creation and editing (units, sections, lessons) with a WYSIWYG editor, audio uploads, and administrative user management.
 
 This guide walks you through how to work on the project locally.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
 Before you start, make sure you have:
 
 * **PHP 8.1+** installed (check with `php -v`)
-* **SQLite** 
+* **SQLite**
 * An email account with SMTP access (like a Gmail account with an App Password) to test password recovery emails.
 
 ---
 
-## 💡 Running the Project Locally
+## Running the Project Locally
 
 1. Clone the repository or download the project folder.
 
@@ -38,7 +38,7 @@ http://localhost:8000
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── controllers/       # Handles user requests (e.g. login, dashboard, contents)
@@ -46,13 +46,13 @@ http://localhost:8000
 ├── includes/          # Initialization and helper functions
 ├── views/             # HTML templates (split into partials and pages)
 ├── public/            # Entry point (index.php) and static assets
-├── lib/               # Email logic and third-party libraries
+├── lib/               # Email logic, logging, and third-party libraries
 ├── data/              # SQLite database file is stored here
 ```
 
 ---
 
-## 🎓 Features Overview
+## Features Overview
 
 ### Public Pages
 
@@ -80,19 +80,19 @@ http://localhost:8000
 
 ### Audio Uploads
 
-* Lessons and Sections use a WYSIWYG editor (SunEditor) that lets you upload audio directly. Audio is stored in the database as BLOBs. Images are converted to base64 and embedded in  the HTML in the database.
+* Lessons and Sections use a WYSIWYG editor (SunEditor) that lets you upload audio directly. Audio is stored in the database as BLOBs. Images are converted to base64 and embedded in the HTML in the database.
 
 ---
 
-## 🔑 Admin Tips
+## Admin Notes
 
-* The Users table is empty on initialization. The first registered user is automatically an administrator account. Every account registered after is registered as a contributor, but can be changed to an administrator role by another administrator.
+* The Users table is empty on initialization. The first registered user is automatically an administrator. Every account registered after that is a contributor, but can be promoted by an admin.
 * Admins can create/edit/delete users, change passwords, change user roles, and toggle public registration.
 * User roles: `admin` and `contributor`
 
 ---
 
-## 🔧 Developer Notes
+## Developer Notes
 
 * Routing is handled manually in `public/index.php`
 * Session setup is in `includes/init.php`
@@ -100,9 +100,25 @@ http://localhost:8000
 * SQLite is used locally — database schema is automatically initialized in `init.php`
 * `views/partials/` contains reusable components like navbars and modals
 
+### Logging
+
+Activity logging is handled by `lib/logger.php`. It logs significant events (logins, content changes, user management actions) to `/var/log/migmaq.log`.
+
+To set up the log file on the server:
+
+```bash
+sudo touch /var/log/migmaq.log && sudo chown www-data:www-data /var/log/migmaq.log
+```
+
+Log entries follow this format:
+
+```
+[2026-06-10 14:32:01] [unit.update] user:malek (id:1) title:Lesson 1 status:published
+```
+
 ---
 
-## 💡 Environment Variables
+## Environment Variables
 
 Create a `.env` file in the root with:
 
@@ -111,9 +127,9 @@ SMTP_USERNAME=your@email.com
 SMTP_PASSWORD=your_smtp_app_password
 ```
 
-## 🚀 XML Import Script
+## XML Import Script
 
-There is a Python script in the root directory that imports and transforms content from the legacy master.xml file into the new SQLite database format. It:
+There is a Python script in the root directory that imports and transforms content from the legacy `master.xml` file into the new SQLite database format. It:
 
 - Parses the XML structure (sections > units > lessons)
 - Converts `<note>` elements to HTML paragraphs
@@ -133,10 +149,10 @@ Make sure your `master.xml` and `audio/` folder are both present.
 
 ---
 
-## 🙌 Need Help?
+## Troubleshooting
 
 If you run into issues:
 
 * Check your PHP error logs
 * Make sure the `data/` folder is writable (for SQLite)
-* Ensure your SMTP credentials are valid. Also, ensure that there are no spaces in the app password.
+* Ensure your SMTP credentials are valid, with no spaces in the app password

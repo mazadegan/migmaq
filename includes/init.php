@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../lib/logger.php';
+
 $host = $_SERVER['HTTP_HOST'];
 $domain = explode(':', $host)[0]; // remove port if present (for local dev)
 

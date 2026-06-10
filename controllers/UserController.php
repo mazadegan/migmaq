@@ -70,6 +70,7 @@ class UserController
         $user = $this->userModel->find((int)$userId);
         if ($user) {
             $this->userModel->update((int)$userId, $user['username'], $user['email'], $role);
+            log_activity('user.role_updated', ['target_user_id' => $userId, 'new_role' => $role]);
             header("Location: /dashboard/manage-users?status=role_updated");
             exit;
         }
@@ -96,6 +97,7 @@ class UserController
         }
 
         $this->userModel->updatePassword((int)$userId, $password);
+        log_activity('user.password_changed', ['target_user_id' => $userId]);
         header("Location: /dashboard/manage-users?status=password_changed");
         exit();
     }
@@ -121,6 +123,7 @@ class UserController
 
         $this->userModel->create($username, $email, $password, $role);
 
+        log_activity('user.create', ['username' => $username, 'email' => $email, 'role' => $role]);
         header("Location: /dashboard/manage-users?status=user_created");
         exit;
     }
@@ -145,6 +148,7 @@ class UserController
         }
 
         $this->userModel->update((int)$id, $username, $email, $role);
+        log_activity('user.update', ['target_user_id' => $id, 'username' => $username]);
         header("Location: /dashboard/manage-users?status=updated");
         exit();
     }
@@ -166,6 +170,7 @@ class UserController
         }
 
         $this->userModel->delete((int)$id);
+        log_activity('user.delete', ['target_user_id' => $id]);
         header("Location: /dashboard/manage-users?status=deleted");
         exit();
     }
@@ -243,6 +248,7 @@ class UserController
 
         $this->userModel->updatePassword((int)$userId, $newPassword);
 
+        log_activity('user.change_own_password');
         $_SESSION['account_success'] = true;
         header("Location: /dashboard/account");
         exit;

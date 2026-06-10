@@ -38,9 +38,11 @@ class AuthController
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'];
+                    log_activity('auth.login', ['email' => $email]);
                     header("Location: /dashboard");
                     exit();
                 } else {
+                    log_activity('auth.login_failed', ['email' => $email]);
                     $errors[] = "Invalid email or password.";
                 }
             } catch (PDOException $e) {
@@ -106,6 +108,7 @@ class AuthController
                 $stmt = $this->pdo->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$username, $email, $hashedPassword, $role]);
 
+                log_activity('auth.register', ['username' => $username, 'email' => $email, 'role' => $role]);
                 header("Location: /register?success=1");
                 exit();
             } catch (PDOException $e) {
@@ -157,6 +160,7 @@ class AuthController
                 $stmt = $this->pdo->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?)");
                 $stmt->execute([$email, $hashedToken, $expiresAt]);
 
+                log_activity('auth.password_reset_requested', ['email' => $email]);
                 $resetLink = "https://" . $_SERVER['HTTP_HOST'] . "/reset-password?token=$rawToken";
 
                 $body = "<p>Hi {$user['username']},</p>
@@ -234,6 +238,7 @@ class AuthController
             $stmt = $this->pdo->prepare("DELETE FROM password_resets WHERE email = ?");
             $stmt->execute([$entry['email']]);
 
+            log_activity('auth.password_reset_completed', ['email' => $entry['email']]);
             header("Location: /login?reset=success");
             exit();
         }
@@ -244,6 +249,7 @@ class AuthController
 
     public function logout()
     {
+        log_activity('auth.logout');
         session_destroy();
         header("Location: /login");
         unset($_SESSION['csrf_token']);

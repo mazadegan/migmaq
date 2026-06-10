@@ -44,7 +44,9 @@ class SectionController
         }
 
         $this->sectionModel->save($data);
-        // header('Location: /dashboard?status=section_saved');
+
+        $action = empty($data['id']) ? 'section.create' : 'section.update';
+        log_activity($action, ['title' => $data['title'], 'unit_id' => $data['unit_id']]);
         $unitId = $data['unit_id'];
         header("Location: /dashboard/section-editor?unitId=$unitId&status=section_saved");
         exit;
@@ -59,6 +61,7 @@ class SectionController
 
         if ($id && $unitId) {
             $this->sectionModel->delete($id);
+            log_activity('section.delete', ['section_id' => $id, 'unit_id' => $unitId]);
             header("Location: /dashboard/section-editor?unitId=$unitId&status=section_deleted");
             exit;
         } else {

@@ -64,6 +64,7 @@ class UnitController
 
         $this->unitModel->delete($unitId);
 
+        log_activity('unit.delete', ['unit_id' => $unitId]);
         // header('Location: /dashboard?status=deleted');
         header('Location: /dashboard/unit-editor?status=deleted');
         exit;
@@ -93,7 +94,8 @@ class UnitController
             'status' => $status
         ]);
 
-        // ✅ redirect before any output
+        $action = $unitId ? 'unit.update' : 'unit.create';
+        log_activity($action, ['title' => $title, 'status' => $status]);
         header('Location: /dashboard/unit-editor?status=success');
         exit;
     }

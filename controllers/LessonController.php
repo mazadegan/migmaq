@@ -32,6 +32,8 @@ class LessonController
 
         $this->lessonModel->save($data);
 
+        $action = empty($data['id']) ? 'lesson.create' : 'lesson.update';
+        log_activity($action, ['title' => $data['title'], 'section_id' => $data['section_id']]);
         $unitId = $_POST['unitId'] ?? '';
         $sectionId = $data['section_id'];
         header("Location: /dashboard/lesson-editor?unitId=$unitId&sectionId=$sectionId&status=lesson_saved");
@@ -48,6 +50,7 @@ class LessonController
 
         if ($id && $sectionId && $unitId) {
             $this->lessonModel->delete($id);
+            log_activity('lesson.delete', ['lesson_id' => $id, 'section_id' => $sectionId]);
             header("Location: /dashboard/lesson-editor?unitId=$unitId&sectionId=$sectionId&status=lesson_deleted");
             exit;
         } else {
