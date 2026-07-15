@@ -10,16 +10,31 @@ class Lesson
         $this->pdo = $pdo;
     }
 
-    public function getBySection(int $sectionId): array
+    public function getBySection(int $sectionId, bool $publishedOnly = false): array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM lessons WHERE section_id = ? ORDER BY position ASC");
+        $sql = "SELECT lessons.* FROM lessons
+                JOIN sections ON sections.id = lessons.section_id
+                JOIN units ON units.id = sections.unit_id
+                WHERE lessons.section_id = ?";
+        if ($publishedOnly) {
+            $sql .= " AND lessons.status = 'published' AND sections.status = 'published' AND units.status = 'published'";
+        }
+        $sql .= " ORDER BY lessons.position ASC";
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$sectionId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function find(int $id): ?array
+    public function find(int $id, bool $publishedOnly = false): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM lessons WHERE id = ?");
+        $sql = "SELECT lessons.* FROM lessons
+                JOIN sections ON sections.id = lessons.section_id
+                JOIN units ON units.id = sections.unit_id
+                WHERE lessons.id = ?";
+        if ($publishedOnly) {
+            $sql .= " AND lessons.status = 'published' AND sections.status = 'published' AND units.status = 'published'";
+        }
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id]);
         $lesson = $stmt->fetch(PDO::FETCH_ASSOC);
         return $lesson ?: null;
@@ -81,7 +96,7 @@ class Lesson
         }
     }
 
-    public function getAdjacentLessons(int $lessonId): array
+    public function getAdjacentLessons(int $lessonId, bool $publishedOnly = false): array
     {
         $stmt = $this->pdo->prepare("SELECT section_id, position FROM lessons WHERE id = ?");
         $stmt->execute([$lessonId]);
@@ -89,10 +104,12 @@ class Lesson
 
         if (!$current) return ['prev' => null, 'next' => null];
 
+        $statusFilter = $publishedOnly ? " AND status = 'published'" : "";
+
         // Get previous lesson
         $stmt = $this->pdo->prepare("
         SELECT id, title FROM lessons
-        WHERE section_id = ? AND position < ?
+        WHERE section_id = ? AND position < ?{$statusFilter}
         ORDER BY position DESC LIMIT 1
     ");
         $stmt->execute([$current['section_id'], $current['position']]);
@@ -101,7 +118,7 @@ class Lesson
         // Get next lesson
         $stmt = $this->pdo->prepare("
         SELECT id, title FROM lessons
-        WHERE section_id = ? AND position > ?
+        WHERE section_id = ? AND position > ?{$statusFilter}
         ORDER BY position ASC LIMIT 1
     ");
         $stmt->execute([$current['section_id'], $current['position']]);

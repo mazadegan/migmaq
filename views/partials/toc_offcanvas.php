@@ -9,11 +9,11 @@
     $sectionModel = new Section($pdo);
     $lessonModel = new Lesson($pdo);
 
-    $units = $unitModel->all();
+    $units = $unitModel->all(true);
     foreach ($units as &$unitItem) {
-        $unitItem['sections'] = $sectionModel->getByUnit($unitItem['id']);
+        $unitItem['sections'] = $sectionModel->getByUnit($unitItem['id'], true);
         foreach ($unitItem['sections'] as &$sectionItem) {
-            $sectionItem['lessons'] = $lessonModel->getBySection($sectionItem['id']);
+            $sectionItem['lessons'] = $lessonModel->getBySection($sectionItem['id'], true);
         }
     }
     ?>

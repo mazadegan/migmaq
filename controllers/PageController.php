@@ -28,13 +28,13 @@ class PageController
         $unitModel = new Unit($this->pdo);
         $sectionModel = new Section($this->pdo);
 
-        $unit = $unitModel->find($unitId);
+        $unit = $unitModel->find($unitId, true);
         if (!$unit) {
             http_response_code(404);
             exit('Unit not found');
         }
 
-        $sections = $sectionModel->getByUnit($unitId);
+        $sections = $sectionModel->getByUnit($unitId, true);
         $breadcrumbs = [
             ['label' => 'Contents', 'url' => '/contents'],
             ['label' => $unit['title']] // current page, no URL
@@ -54,15 +54,14 @@ class PageController
         $sectionModel = new Section($this->pdo);
         $lessonModel = new Lesson($this->pdo);
 
-        $section = $sectionModel->find($sectionId);
+        $section = $sectionModel->find($sectionId, true);
         if (!$section) {
             http_response_code(404);
             exit('Section not found');
         }
 
-        $lessons = $lessonModel->getBySection($sectionId);
-        $section = $sectionModel->find($sectionId);
-        $unit = (new Unit($this->pdo))->find($section['unit_id']);
+        $lessons = $lessonModel->getBySection($sectionId, true);
+        $unit = (new Unit($this->pdo))->find($section['unit_id'], true);
         $breadcrumbs = [
             ['label' => 'Contents', 'url' => '/contents'],
             ['label' => $unit['title'], 'url' => "/unit?id={$unit['id']}"],
@@ -81,10 +80,15 @@ class PageController
         }
 
         $lessonModel = new Lesson($this->pdo);
-        $lesson = $lessonModel->find($lessonId);
-        $lesson = $lessonModel->find($lessonId);
-        $section = (new Section($this->pdo))->find($lesson['section_id']);
-        $unit = (new Unit($this->pdo))->find($section['unit_id']);
+        $lesson = $lessonModel->find($lessonId, true);
+
+        if (!$lesson) {
+            http_response_code(404);
+            exit('Lesson not found');
+        }
+
+        $section = (new Section($this->pdo))->find($lesson['section_id'], true);
+        $unit = (new Unit($this->pdo))->find($section['unit_id'], true);
 
         $breadcrumbs = [
             ['label' => 'Contents', 'url' => '/contents'],
@@ -93,13 +97,7 @@ class PageController
             ['label' => $lesson['title']]
         ];
 
-
-        if (!$lesson) {
-            http_response_code(404);
-            exit('Lesson not found');
-        }
-
-        $adjacent = $lessonModel->getAdjacentLessons((int)$lessonId);
+        $adjacent = $lessonModel->getAdjacentLessons((int)$lessonId, true);
         require __DIR__ . '/../views/show_lesson.php';
     }
 }

@@ -10,15 +10,24 @@ class Unit
         $this->pdo = $pdo;
     }
 
-    public function all(): array
+    public function all(bool $publishedOnly = false): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM units ORDER BY position ASC");
+        $sql = "SELECT * FROM units";
+        if ($publishedOnly) {
+            $sql .= " WHERE status = 'published'";
+        }
+        $sql .= " ORDER BY position ASC";
+        $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function find(int $id): ?array
+    public function find(int $id, bool $publishedOnly = false): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM units WHERE id = ?");
+        $sql = "SELECT * FROM units WHERE id = ?";
+        if ($publishedOnly) {
+            $sql .= " AND status = 'published'";
+        }
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id]);
         $unit = $stmt->fetch(PDO::FETCH_ASSOC);
         return $unit ?: null;

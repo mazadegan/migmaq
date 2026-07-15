@@ -8,9 +8,16 @@ class Section
         $this->pdo = $pdo;
     }
 
-    public function getByUnit(int $unitId): array
+    public function getByUnit(int $unitId, bool $publishedOnly = false): array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM sections WHERE unit_id = ? ORDER BY position ASC");
+        $sql = "SELECT sections.* FROM sections
+                JOIN units ON units.id = sections.unit_id
+                WHERE sections.unit_id = ?";
+        if ($publishedOnly) {
+            $sql .= " AND sections.status = 'published' AND units.status = 'published'";
+        }
+        $sql .= " ORDER BY sections.position ASC";
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$unitId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -49,9 +56,15 @@ class Section
         $stmt->execute([$id]);
     }
 
-    public function find(int $id): ?array
+    public function find(int $id, bool $publishedOnly = false): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM sections WHERE id = ?");
+        $sql = "SELECT sections.* FROM sections
+                JOIN units ON units.id = sections.unit_id
+                WHERE sections.id = ?";
+        if ($publishedOnly) {
+            $sql .= " AND sections.status = 'published' AND units.status = 'published'";
+        }
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id]);
         $section = $stmt->fetch(PDO::FETCH_ASSOC);
         return $section ?: null;

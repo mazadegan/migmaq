@@ -25,12 +25,12 @@ class ContentsController
 
     public function getContentsTree(): array
     {
-        $units = $this->unitModel->all();
+        $units = $this->unitModel->all(true);
 
         foreach ($units as &$unit) {
-            $sections = $this->sectionModel->getByUnit($unit['id']);
+            $sections = $this->sectionModel->getByUnit($unit['id'], true);
             foreach ($sections as &$section) {
-                $section['lessons'] = $this->lessonModel->getBySection($section['id']);
+                $section['lessons'] = $this->lessonModel->getBySection($section['id'], true);
             }
             $unit['sections'] = $sections;
         }
