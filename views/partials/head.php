@@ -14,6 +14,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
-    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon">
+    <link rel="icon" href="/assets/<?= htmlspecialchars(site('site_logo', 'logo.png')) ?>">
 </head>
 <body>
